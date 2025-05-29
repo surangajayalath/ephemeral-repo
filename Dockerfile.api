@@ -1,0 +1,7 @@
+FROM public.ecr.aws/docker/library/node:alpine
+WORKDIR /usr/src/app
+COPY package.json .
+RUN npm install --loglevel warn
+COPY index1.js index1.html ./
+ENV PORT=8080
+CMD [ "node", "." ]

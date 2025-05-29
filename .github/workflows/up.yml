@@ -57,7 +57,8 @@ jobs:
           terraform apply -auto-approve \
             -var="name=${{ github.event.repository.name }}" \
             -var="environment=${ENVIRONMENT}" \
-            -var="image_tag=${DOCKER_TAG}"
+            -var="image_tag_api=${DOCKER_TAG}-api" \
+            -var="image_tag_web=${DOCKER_TAG}-web"
 
           echo "Url=$(terraform output -json | jq '.endpoint_url.value' -r)" >> $GITHUB_OUTPUT
 
