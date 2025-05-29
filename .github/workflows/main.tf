@@ -87,6 +87,8 @@ module "lambda_function_from_container_image_api" {
   image_uri                  = module.docker_image_api.image_uri
   architectures              = ["x86_64"]
   create_lambda_function_url = true
+  lambda_role = "${local.ns}-api-role"
+  logging_log_group = "api/"
 }
 
 module "lambda_function_from_container_image_web" {
@@ -99,6 +101,8 @@ module "lambda_function_from_container_image_web" {
   image_uri                  = module.docker_image_web.image_uri
   architectures              = ["x86_64"]
   create_lambda_function_url = true
+  lambda_role = "${local.ns}-web-role"
+    logging_log_group = "web/"
 }
 
 
