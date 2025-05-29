@@ -52,7 +52,7 @@ jobs:
 
           terraform init \
             -backend-config="bucket=${TF_BACKEND_S3_BUCKET}" \
-            -backend-config="key=${ENVIRONMENT}.tfstate"
+            -backend-config="key=github-action/${ENVIRONMENT}.tfstate"
 
           terraform apply -auto-approve \
             -var="name=${{ github.event.repository.name }}" \
