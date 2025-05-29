@@ -60,7 +60,8 @@ jobs:
             -var="image_tag_api=${DOCKER_TAG}-api" \
             -var="image_tag_web=${DOCKER_TAG}-web"
 
-          echo "Url=$(terraform output -json | jq '.endpoint_url.value' -r)" >> $GITHUB_OUTPUT
+          echo "Url_api=$(terraform output -json | jq '.endpoint_url_api.value' -r)" >> $GITHUB_OUTPUT
+          echo "Url_web=$(terraform output -json | jq '.endpoint_url_web.value' -r)" >> $GITHUB_OUTPUT
 
       - name: Add HTTPS endpoint to PR comment
         uses: mshick/add-pr-comment@v1
@@ -68,7 +69,8 @@ jobs:
           message: |
             :rocket: Code successfully deployed to a new ephemeral containerized PR environment!
 
-            ${{ steps.furl.outputs.Url }}
+            ${{ steps.furl.outputs.Url_api }}
+            ${{ steps.furl.outputs.Url_web }}
 
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: "github-actions[bot]"
