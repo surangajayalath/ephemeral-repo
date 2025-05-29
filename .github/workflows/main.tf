@@ -88,7 +88,7 @@ module "lambda_function_from_container_image_api" {
   architectures              = ["x86_64"]
   create_lambda_function_url = true
   lambda_role = "${local.ns}-api-role"
-  logging_log_group = "api/"
+  logging_log_group = "/aws/lambda/api/${local.ns}"
 }
 
 module "lambda_function_from_container_image_web" {
@@ -102,7 +102,7 @@ module "lambda_function_from_container_image_web" {
   architectures              = ["x86_64"]
   create_lambda_function_url = true
   lambda_role = "${local.ns}-web-role"
-    logging_log_group = "web/"
+  logging_log_group = "/aws/lambda/web/${local.ns}"
 }
 
 
