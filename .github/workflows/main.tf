@@ -61,7 +61,7 @@ module "docker_image_api" {
   source = "terraform-aws-modules/lambda/aws//modules/docker-build"
 
   create_ecr_repo = true
-  ecr_repo        = local.ns
+  ecr_repo        = "${local.ns}-api"
   image_tag       = var.image_tag_api
   source_path     = "../../"
   docker_file_path = "../../Dockerfile.api"
@@ -71,7 +71,7 @@ module "docker_image_web" {
   source = "terraform-aws-modules/lambda/aws//modules/docker-build"
 
   create_ecr_repo = true
-  ecr_repo        = local.ns
+  ecr_repo        = "${local.ns}-web"
   image_tag       = var.image_tag_web
   source_path     = "../../"
   docker_file_path = "../../Dockerfile.web"
