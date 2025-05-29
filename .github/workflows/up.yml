@@ -26,6 +26,9 @@ jobs:
           echo "TF_BACKEND_S3_BUCKET=${TF_BACKEND_S3_BUCKET}" >> $GITHUB_ENV
           environment=${GITHUB_HEAD_REF##*/}
           echo "ENVIRONMENT=${environment}" >> $GITHUB_ENV
+          commit_id=$(git rev-parse --short=7 HEAD)
+          echo "Commit ID: $commit_id"
+
 
       - name: Assume AWS IAM Role
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -53,7 +56,7 @@ jobs:
           terraform apply -auto-approve \
             -var="name=${{ github.event.repository.name }}" \
             -var="environment=${ENVIRONMENT}" \
-            -var="image_tag=${GITHUB_SHA}"
+            -var="image_tag=${$commit_id}"
 
           echo "Url=$(terraform output -json | jq '.endpoint_url.value' -r)" >> $GITHUB_OUTPUT
 
