@@ -72,8 +72,9 @@ jobs:
           message: |
             :rocket: Code successfully deployed to a new ephemeral containerized PR environment!
 
-            echo "🌎 API URL:- ${{ steps.furl.outputs.Url_api }}"
-            echo "🌎 WEB URL:- ${{ steps.furl.outputs.Url_web }}"
+            🌎 API URL:- ${{ steps.furl.outputs.Url_api }}
+            
+            🌎 WEB URL:- ${{ steps.furl.outputs.Url_web }}
 
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: "github-actions[bot]"
