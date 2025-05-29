@@ -51,7 +51,8 @@ jobs:
           terraform destroy -auto-approve \
             -var="name=${{ github.event.repository.name }}" \
             -var="environment=${ENVIRONMENT}" \
-            -var="image_tag=${DOCKER_TAG}"
+            -var="image_tag_api=${DOCKER_TAG}-api" \
+            -var="image_tag_web=${DOCKER_TAG}-web"
 
       - name: Add PR comment
         uses: mshick/add-pr-comment@v1
