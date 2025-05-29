@@ -57,7 +57,7 @@ provider "docker" {
   }
 }
 
-module "docker_imag_api" {
+module "docker_image_api" {
   source = "terraform-aws-modules/lambda/aws//modules/docker-build"
 
   create_ecr_repo = true
