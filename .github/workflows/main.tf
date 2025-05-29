@@ -63,8 +63,8 @@ module "docker_image_api" {
   create_ecr_repo = true
   ecr_repo        = local.ns
   image_tag       = var.image_tag_api
-#  source_path     = "../../Dockerfile"
-  docker_file_path = "../../Dockerfile.api"
+  source_path     = "../../Dockerfile.ap"
+  #docker_file_path = "../../Dockerfile.api"
 }
 
 module "docker_image_web" {
@@ -73,8 +73,8 @@ module "docker_image_web" {
   create_ecr_repo = true
   ecr_repo        = local.ns
   image_tag       = var.image_tag_web
-#  source_path     = "../../"
-  docker_file_path = "../../Dockerfile.web"
+  source_path     = "../../Dockerfile.web"
+  #docker_file_path = "../../Dockerfile.web"
 }
 
 module "lambda_function_from_container_image_api" {
