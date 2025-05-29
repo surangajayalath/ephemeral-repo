@@ -80,7 +80,7 @@ module "docker_image_web" {
 module "lambda_function_from_container_image_api" {
   source = "terraform-aws-modules/lambda/aws"
 
-  function_name              = local.ns
+  function_name              = "${local.ns}-api"
   description                = "Ephemeral preview environment for: ${local.ns}"
   create_package             = false
   package_type               = "Image"
@@ -94,7 +94,7 @@ module "lambda_function_from_container_image_api" {
 module "lambda_function_from_container_image_web" {
   source = "terraform-aws-modules/lambda/aws"
 
-  function_name              = local.ns
+  function_name              = "${local.ns}-web"
   description                = "Ephemeral preview environment for: ${local.ns}"
   create_package             = false
   package_type               = "Image"
