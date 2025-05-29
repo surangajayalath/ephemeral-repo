@@ -27,6 +27,7 @@ jobs:
           environment=${GITHUB_HEAD_REF##*/}
           echo "ENVIRONMENT=${environment}" >> $GITHUB_ENV
 
+
       - name: Assume AWS IAM Role
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -40,22 +41,30 @@ jobs:
           terraform_wrapper: false
 
       - name: Lambda-ify
-        run: echo "COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.7.1 /lambda-adapter /opt/extensions/lambda-adapter" >> Dockerfile
+        run: |
+          echo "COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.2 /lambda-adapter /opt/extensions/lambda-adapter" >> Dockerfile.api
+          echo "COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.2 /lambda-adapter /opt/extensions/lambda-adapter" >> Dockerfile.web
+
 
       - name: Deploy to ephemeral environment 
         id: furl
         working-directory: ./.github/workflows
         run: |
+          DOCKER_TAG=$(git rev-parse --short=7 HEAD)
+          echo "Commit ID: $DOCKER_TAG"
+
           terraform init \
             -backend-config="bucket=${TF_BACKEND_S3_BUCKET}" \
-            -backend-config="key=${ENVIRONMENT}.tfstate"
+            -backend-config="key=github-action/${ENVIRONMENT}.tfstate"
 
           terraform apply -auto-approve \
             -var="name=${{ github.event.repository.name }}" \
             -var="environment=${ENVIRONMENT}" \
-            -var="image_tag=${GITHUB_SHA}"
+            -var="image_tag_api=${DOCKER_TAG}-api" \
+            -var="image_tag_web=${DOCKER_TAG}-web"
 
-          echo "Url=$(terraform output -json | jq '.endpoint_url.value' -r)" >> $GITHUB_OUTPUT
+          echo "Url_api=$(terraform output -json | jq '.endpoint_url_api.value' -r)" >> $GITHUB_OUTPUT
+          echo "Url_web=$(terraform output -json | jq '.endpoint_url_web.value' -r)" >> $GITHUB_OUTPUT
 
       - name: Add HTTPS endpoint to PR comment
         uses: mshick/add-pr-comment@v1
@@ -63,7 +72,9 @@ jobs:
           message: |
             :rocket: Code successfully deployed to a new ephemeral containerized PR environment!
 
-            ${{ steps.furl.outputs.Url }}
+            echo "API URL:- ${{ steps.furl.outputs.Url_api }}"
+            echo ""
+            echo "WEB URL:- ${{ steps.furl.outputs.Url_web }}"
 
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: "github-actions[bot]"

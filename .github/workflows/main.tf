@@ -27,7 +27,12 @@ variable "environment" {
   default = "development"
 }
 
-variable "image_tag" {
+variable "image_tag_api" {
+  type        = string
+  description = "container image tag"
+}
+
+variable "image_tag_web" {
   type        = string
   description = "container image tag"
 }
@@ -52,27 +57,59 @@ provider "docker" {
   }
 }
 
-module "docker_image" {
+module "docker_image_api" {
   source = "terraform-aws-modules/lambda/aws//modules/docker-build"
 
   create_ecr_repo = true
-  ecr_repo        = local.ns
-  image_tag       = var.image_tag
+  ecr_repo        = "${local.ns}-api"
+  image_tag       = var.image_tag_api
   source_path     = "../../"
+  docker_file_path = "../../Dockerfile.api"
 }
 
-module "lambda_function_from_container_image" {
+module "docker_image_web" {
+  source = "terraform-aws-modules/lambda/aws//modules/docker-build"
+
+  create_ecr_repo = true
+  ecr_repo        = "${local.ns}-web"
+  image_tag       = var.image_tag_web
+  source_path     = "../../"
+  docker_file_path = "../../Dockerfile.web"
+}
+
+module "lambda_function_from_container_image_api" {
   source = "terraform-aws-modules/lambda/aws"
 
-  function_name              = local.ns
+  function_name              = "${local.ns}-api"
   description                = "Ephemeral preview environment for: ${local.ns}"
   create_package             = false
   package_type               = "Image"
-  image_uri                  = module.docker_image.image_uri
+  image_uri                  = module.docker_image_api.image_uri
   architectures              = ["x86_64"]
   create_lambda_function_url = true
+  lambda_role = "${local.ns}-api-role"
+  logging_log_group = "/aws/lambda/api/${local.ns}"
 }
 
-output "endpoint_url" {
-  value = module.lambda_function_from_container_image.lambda_function_url
+module "lambda_function_from_container_image_web" {
+  source = "terraform-aws-modules/lambda/aws"
+
+  function_name              = "${local.ns}-web"
+  description                = "Ephemeral preview environment for: ${local.ns}"
+  create_package             = false
+  package_type               = "Image"
+  image_uri                  = module.docker_image_web.image_uri
+  architectures              = ["x86_64"]
+  create_lambda_function_url = true
+  lambda_role = "${local.ns}-web-role"
+  logging_log_group = "/aws/lambda/web/${local.ns}"
+}
+
+
+output "endpoint_url_api" {
+  value = module.lambda_function_from_container_image_api.lambda_function_url
+}
+
+output "endpoint_url_web" {
+  value = module.lambda_function_from_container_image_web.lambda_function_url
 }
