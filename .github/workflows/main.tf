@@ -24,6 +24,7 @@ variable "name" {
 variable "environment" {
   type        = string
   description = "environment for the resources"
+  default = "development"
 }
 
 variable "image_tag" {
