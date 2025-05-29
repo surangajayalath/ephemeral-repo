@@ -47,8 +47,8 @@ jobs:
         id: furl
         working-directory: ./.github/workflows
         run: |
-          commit_id=$(git rev-parse --short=7 HEAD)
-          echo "Commit ID: $commit_id"
+          DOCKER_TAG=$(git rev-parse --short=7 HEAD)
+          echo "Commit ID: $DOCKER_TAG"
 
           terraform init \
             -backend-config="bucket=${TF_BACKEND_S3_BUCKET}" \
@@ -57,7 +57,7 @@ jobs:
           terraform apply -auto-approve \
             -var="name=${{ github.event.repository.name }}" \
             -var="environment=${ENVIRONMENT}" \
-            -var="image_tag=${commit_id}"
+            -var="image_tag=${DOCKER_TAG}"
 
           echo "Url=$(terraform output -json | jq '.endpoint_url.value' -r)" >> $GITHUB_OUTPUT
 

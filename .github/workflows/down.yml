@@ -41,6 +41,9 @@ jobs:
       - name: Dispose of ephemeral environment
         working-directory: ./.github/workflows
         run: |
+          DOCKER_TAG=$(git rev-parse --short=7 HEAD)
+          echo "Commit ID: $DOCKER_TAG"
+
           terraform init \
             -backend-config="bucket=${TF_BACKEND_S3_BUCKET}" \
             -backend-config="key=${ENVIRONMENT}.tfstate"
@@ -48,7 +51,7 @@ jobs:
           terraform destroy -auto-approve \
             -var="name=${{ github.event.repository.name }}" \
             -var="environment=${ENVIRONMENT}" \
-            -var="image_tag=${GITHUB_SHA}"
+            -var="image_tag=${DOCKER_TAG}"
 
       - name: Add PR comment
         uses: mshick/add-pr-comment@v1
