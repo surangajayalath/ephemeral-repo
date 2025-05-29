@@ -100,10 +100,10 @@ module "lambda_function_from_container_image_web" {
 }
 
 
-output "endpoint_url" {
+output "endpoint_url_api" {
   value = module.lambda_function_from_container_image_api.lambda_function_url
 }
 
-output "endpoint_url" {
+output "endpoint_url_web" {
   value = module.lambda_function_from_container_image_web.lambda_function_url
 }
