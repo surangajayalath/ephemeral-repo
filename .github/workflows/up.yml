@@ -26,8 +26,6 @@ jobs:
           echo "TF_BACKEND_S3_BUCKET=${TF_BACKEND_S3_BUCKET}" >> $GITHUB_ENV
           environment=${GITHUB_HEAD_REF##*/}
           echo "ENVIRONMENT=${environment}" >> $GITHUB_ENV
-          commit_id=$(git rev-parse --short=7 HEAD)
-          echo "Commit ID: $commit_id"
 
 
       - name: Assume AWS IAM Role
@@ -49,6 +47,9 @@ jobs:
         id: furl
         working-directory: ./.github/workflows
         run: |
+          commit_id=$(git rev-parse --short=7 HEAD)
+          echo "Commit ID: $commit_id"
+          
           terraform init \
             -backend-config="bucket=${TF_BACKEND_S3_BUCKET}" \
             -backend-config="key=${ENVIRONMENT}.tfstate"
