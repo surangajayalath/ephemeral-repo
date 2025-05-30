@@ -89,6 +89,9 @@ module "lambda_function_from_container_image_api" {
   create_lambda_function_url = true
   lambda_role = "${local.ns}-api-role"
   logging_log_group = "/aws/lambda/api/${local.ns}"
+  environment_variables = {
+    "NODE_ENV" = "production"
+  }
 }
 
 module "lambda_function_from_container_image_web" {
@@ -103,6 +106,9 @@ module "lambda_function_from_container_image_web" {
   create_lambda_function_url = true
   lambda_role = "${local.ns}-web-role"
   logging_log_group = "/aws/lambda/web/${local.ns}"
+  environment_variables = {
+    "NODE_ENV" = "production"
+  }
 }
 
 
